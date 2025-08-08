@@ -1,535 +1,285 @@
 <!DOCTYPE html>
 <html lang="hi">
-
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Waheguru Attendance (OTP, Multi, Share)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
     :root {
-      --skyblue: #e3f2fd;
-      --darkblue: #1565c0;
-      --gradient: linear-gradient(135deg, #64b5f6 0%, #1976d2 100%);
+      --skyblue: #e3f2fd; --darkblue: #1565c0;
+      --gradient: linear-gradient(135deg,#64b5f6 0%,#1976d2 100%);
     }
-
-    body {
-      background: var(--gradient);
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      color: #102447;
-    }
-
-    .container {
-      max-width: 400px;
-      background: var(--skyblue);
-      margin: 30px auto 0 auto;
-      border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(21, 101, 192, 0.17);
-      padding: 23px 10px 10px 10px;
-    }
-
-    .header {
-      text-align: center;
-    }
-
-    .header h1 {
-      color: var(--darkblue);
-      font-size: 2em;
-      font-weight: 700;
-      margin-bottom: 2px;
-    }
-
-    .header h2 {
-      font-size: 1.08em;
-      color: #102447;
-      margin-bottom: 9px;
-      font-weight: 500;
-    }
-
-    .otp-screen {
-      text-align: center;
-    }
-
-    .otp-label {
-      font-size: 1em;
-      font-weight: 500;
-      color: var(--darkblue);
-    }
-
-    .otp-btn {
-      background: var(--darkblue);
-      color: #fff;
-      border: none;
-      border-radius: 7px;
-      padding: 9px 22px;
-      font-size: 1em;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 7px 2px;
-    }
-
-    .otp-input {
-      width: 110px;
-      padding: 9px;
-      font-size: 1.1em;
-      border-radius: 8px;
-      border: 1.6px solid #bdbdbd;
-      outline: none;
-      text-align: center;
-    }
-
-    .otp-error {
-      color: red;
-      margin-top: 7px;
-      font-size: 0.97em;
-      min-height: 1.2em;
-    }
-
-    .show-otp-txt {
-      background: #fff2;
-      color: #1976d2;
-      border-radius: 10px;
-      padding: 6px 14px;
-      font-size: 1.09em;
-      margin: 5px 0 8px 0;
-      font-weight: 600;
-      letter-spacing: 1px;
-      display: inline-block;
-    }
-
-    .hide {
-      display: none !important;
-    }
-
-    .otp-msg {
-      font-size: 0.94em;
-      color: #1565c0d6;
-    }
-
-    .emp-list {
-      margin: 10px 0;
-    }
-
-    .emp-row {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: #bbdefb;
-      border-radius: 7px;
-      padding: 7px 5px;
-      margin-bottom: 8px;
-    }
-
-    .emp-name {
-      flex: 1;
-      font-weight: 500;
-    }
-
-    .emp-btn {
-      padding: 7px 13px;
-      font-size: 0.99em;
-      background: #1565c0;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .emp-btn[disabled] {
-      background: #b0b0b0;
-      cursor: not-allowed;
-    }
-
-    .log {
-      margin-top: 10px;
-      background: #e1f5fe;
-      border-radius: 7px;
-      padding: 8px 5px;
-      font-size: 1em;
-      max-height: 170px;
-      overflow-y: auto;
-    }
-
-    .log-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .log-table th,
-    .log-table td {
-      padding: 4px 7px;
-      border-bottom: 1px solid #90caf9;
-      font-size: 0.97em;
-    }
-
-    .log-table th {
-      background: #82b1ff;
-      color: #102447;
-      font-weight: 600;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 13px;
-      justify-content: center;
-    }
-
-    .whatsapp-btn,
-    .download-btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 7px;
-      font-size: 1em;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      margin-bottom: 5px;
-      box-shadow: 0 0.5px 3px #aaa2;
-    }
-
-    .whatsapp-btn {
-      background: #25d366;
-      color: #fff;
-    }
-
-    .download-btn {
-      background: #1976d2;
-      color: #fff;
-    }
-
-    @media (max-width: 440px) {
-      .container {
-        max-width: 98vw;
-        margin: 10px;
-      }
-
-      .header h1 {
-        font-size: 1.18em;
-      }
-    }
-
-    .modal-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: #0006;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-
-    .modal-box {
-      background: #fff;
-      border-radius: 10px;
-      padding: 22px 17px 16px 17px;
-      min-width: 210px;
-      text-align: center;
-      box-shadow: 0 2px 25px #1976d245;
-    }
-
-    .modal-inp {
-      padding: 9px;
-      font-size: 1.13em;
-      border-radius: 6px;
-      width: 120px;
-      margin-bottom: 10px;
-      letter-spacing: 3px;
-      text-align: center;
-      border: 1.1px solid #1565c0;
-    }
-
-    .modal-btn {
-      background: #1976d2;
-      color: #fff;
-      padding: 9px 24px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 1.08em;
-    }
-
-    .modal-err {
-      color: #f33;
-      min-height: 1em;
-    }
+    body {background:var(--gradient); font-family:'Segoe UI',sans-serif; margin:0; color:#102447;}
+    .container {max-width:400px;background:var(--skyblue);margin:30px auto 0 auto;border-radius:18px;box-shadow:0 8px 24px rgba(21,101,192,0.17);padding:23px 10px 10px 10px;}
+    .header {text-align:center;}
+    .header h1 {color:var(--darkblue);font-size:2em;font-weight:700;margin-bottom:2px;}
+    .header h2 {font-size:1.08em;color:#102447;margin-bottom:9px;font-weight:500;}
+    .otp-screen {text-align:center;}
+    .otp-label {font-size:1em;font-weight:500;color:var(--darkblue);}
+    .otp-btn {background:var(--darkblue);color:#fff;border:none;border-radius:7px;padding:9px 22px;font-size:1em;font-weight:600;cursor:pointer;margin:7px 2px;}
+    .otp-input {width:110px;padding:9px;font-size:1.1em;border-radius:8px;border:1.6px solid #bdbdbd;outline:none;text-align:center;}
+    .otp-error {color:red;margin-top:7px;font-size:0.97em;min-height:1.2em;}
+    .show-otp-txt{background:#fff2; color:#1976d2;border-radius:10px;padding:6px 14px;font-size:1.09em;margin:5px 0 8px 0;font-weight:600;letter-spacing:1px;display:inline-block;}
+    .hide{display:none!important;}
+    .otp-msg{font-size:0.94em;color:#1565c0d6;}
+    .emp-list {margin:10px 0;}
+    .emp-row {display:flex;align-items:center;gap:7px;background:#bbdefb;border-radius:7px;padding:7px 5px;margin-bottom:8px;}
+    .emp-name {flex:1;font-weight:500;}
+    .emp-btn {padding:7px 13px;font-size:0.99em;background:#1565c0;color:#fff;border:none;border-radius:6px;cursor:pointer;}
+    .emp-btn[disabled]{background:#b0b0b0;cursor:not-allowed;}
+    .log {margin-top:10px;background:#e1f5fe;border-radius:7px;padding:8px 5px;font-size:1em;max-height:170px;overflow-y:auto;}
+    .log-table{width:100%;border-collapse:collapse;}
+    .log-table th,.log-table td{padding:4px 7px;border-bottom:1px solid #90caf9;font-size:0.97em;}
+    .log-table th{background:#82b1ff;color:#102447;font-weight:600;}
+    .btn-row{display:flex;gap:8px;margin-top:13px;justify-content:center;}
+    .whatsapp-btn,.download-btn{flex:1;padding:10px;border-radius:7px;font-size:1em;font-weight:500;cursor:pointer;border:none;margin-bottom:5px;box-shadow:0 0.5px 3px #aaa2;}
+    .whatsapp-btn{background:#25D366;color:#fff;}
+    .download-btn{background:#1976d2;color:#fff;}
+    @media (max-width:440px){.container{max-width:98vw;margin:10px;}.header h1{font-size:1.18em;}}
+    .modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:#0006;display:flex;align-items:center;justify-content:center;z-index:50;}
+    .modal-box{background:#fff;border-radius:10px;padding:22px 17px 16px 17px;min-width:210px;text-align:center;box-shadow:0 2px 25px #1976d245;}
+    .modal-inp{padding:9px;font-size:1.13em;border-radius:6px;width:120px;margin-bottom:10px;letter-spacing:3px;text-align:center;border:1.1px solid #1565c0;}
+    .modal-btn{background:#1976d2;color:#fff;padding:9px 24px;border:none;border-radius:6px;font-weight:600;font-size:1.08em;}
+    .modal-err{color:#f33;min-height:1em;}
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>Waheguru Attendance</h1>
-      <h2 id="dateDay"></h2>
-    </div>
+<div class="container">
+  <div class="header">
+    <h1>Waheguru Attendance</h1>
+    <h2 id="dateDay"></h2>
+  </div>
 
-    <!-- OTP Screen -->
-    <div class="otp-screen" id="otpBlock">
-      <label class="otp-label">आज का OTP दर्ज करें:</label><br />
-      <div class="otp-msg">(Request OTP बटन से code पाएँ, admin से पूछें)</div>
-      <button class="otp-btn" id="reqOTPBtn" type="button" onclick="otpRequestFlow()" style="margin-top: 7px;">
-        Request OTP
-      </button>
-      <div id="otpDisplay" class="show-otp-txt hide"></div>
-      <input type="text" class="otp-input" id="otpInput" maxlength="6" placeholder="OTP" />
-      <button class="otp-btn" onclick="checkOTP()">Verify</button>
-      <div class="otp-error" id="otpError"></div>
-    </div>
+  <!-- OTP Screen -->
+  <div class="otp-screen" id="otpBlock">
+    <label class="otp-label">आज का OTP दर्ज करें:</label><br>
+    <div class="otp-msg">(Request OTP बटन से code पाएँ, admin से पूछें)</div>
+    <button class="otp-btn" id="reqOTPBtn" type="button" onclick="otpRequestFlow()" style="margin-top:7px;">Request OTP</button>
+    <div id="otpDisplay" class="show-otp-txt hide"></div>
+    <input type="text" class="otp-input" id="otpInput" maxlength="6" placeholder="OTP">
+    <button class="otp-btn" onclick="checkOTP()">Verify</button>
+    <div class="otp-error" id="otpError"></div>
+  </div>
 
-    <!-- Attendance Form (Multi employee, hide until correct OTP) -->
-    <div id="attendanceForm" style="display:none;">
-      <div class="info" style="margin-bottom:7px;">
-        नीचे सभी पर Attendance करें:<br />
-        <button class="otp-btn" id="reqOTPBtn2" type="button" style="padding:7px 14px 6px 14px;margin:8px 0;"
-          onclick="otpRequestFlow()">Request OTP</button>
-      </div>
-      <div id="formOTPDisplay" class="show-otp-txt hide" style="margin-top:3px;"></div>
-      <div class="emp-list" id="empList"></div>
-      <div class="log" id="attendanceLog" style="display:none;">
-        <table class="log-table" id="logTable">
-          <thead>
-            <tr>
-              <th>नाम</th>
-              <th>समय</th>
-              <th>दिनांक</th>
-              <th>दिन</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="btn-row">
-        <button class="whatsapp-btn" id="whatsappShare">WhatsApp पर शेयर करें</button>
-        <button class="download-btn" id="downloadExcel">Excel (CSV) डाउनलोड</button>
-        <button class="download-btn" id="clearDayData" style="background:#ef5350;">आज का data हटाएँ</button>
-      </div>
+  <!-- Attendance Form (Multi employee, hide until correct OTP) -->
+  <div id="attendanceForm" style="display:none;">
+    <div class="info" style="margin-bottom:7px;">नीचे सभी पर Attendance करें:<br>
+      <button class="otp-btn" id="reqOTPBtn2" type="button" style="padding:7px 14px 6px 14px;margin:8px 0;" onclick="otpRequestFlow()">Request OTP</button>
     </div>
-
-    <!-- Password Modal -->
-    <div id="modalBG" class="modal-bg hide">
-      <div class="modal-box">
-        <div style="font-size:1.1em;font-weight:500;margin-bottom:5px;color:#1976d2;">
-          Request OTP<br />पहुँच पाने हेतु पासवर्ड डालें
-        </div>
-        <input id="modalPass" class="modal-inp" type="password" maxlength="6" placeholder="पासवर्ड" autofocus />
-        <div class="modal-err" id="modalError"></div>
-        <button class="modal-btn" onclick="modalSubmit()">OK</button>
-      </div>
+    <div id="formOTPDisplay" class="show-otp-txt hide" style="margin-top:3px;"></div>
+    <div class="emp-list" id="empList"></div>
+    <div class="log" id="attendanceLog" style="display:none;">
+      <table class="log-table" id="logTable">
+        <thead><tr><th>नाम</th><th>समय</th><th>दिनांक</th><th>दिन</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="btn-row">
+      <button class="whatsapp-btn" id="whatsappShare">WhatsApp पर शेयर करें</button>
+      <button class="download-btn" id="downloadExcel">Excel (CSV) डाउनलोड</button>
+      <button class="download-btn" id="clearDayData" style="background:#ef5350;">आज का data हटाएँ</button>
     </div>
   </div>
 
-  <script>
-    function nowDateStr() {
-      let n = new Date();
-      return n.toLocaleDateString('hi-IN');
-    }
-    function nowDayStr() {
-      let n = new Date();
-      return n.toLocaleDateString('hi-IN', { weekday: 'long' });
-    }
-    function nowTimeStr() {
-      let n = new Date();
-      return n.toLocaleTimeString('hi-IN');
-    }
-    function updateDateDay() {
-      let now = new Date();
-      let day = nowDayStr();
-      let date = nowDateStr();
-      document.getElementById('dateDay').innerText = 'दिन: ' + day + ' | दिनांक: ' + date;
-    }
-    updateDateDay();
+  <!-- Password Modal -->
+  <div id="modalBG" class="modal-bg hide">
+    <div class="modal-box">
+      <div style="font-size:1.1em;font-weight:500;margin-bottom:5px;color:#1976d2;">Request OTP<br>पहुँच पाने हेतु पासवर्ड डालें</div>
+      <input id="modalPass" class="modal-inp" type="password" maxlength="6" placeholder="पासवर्ड" autofocus>
+      <div class="modal-err" id="modalError"></div>
+      <button class="modal-btn" onclick="modalSubmit()">OK</button>
+    </div>
+  </div>
+</div>
 
-    // OTP logic (auto, daily)
-    function makeOTP() {
-      let n = new Date();
-      let dd = n.getDate();
-      let mm = n.getMonth() + 1;
-      let yyyy = n.getFullYear();
-      let otp = (dd * mm + yyyy) % 100000 + 21;
-      return String(otp).padStart(6, '0');
-    }
-    const todaysOTP = makeOTP();
-    const PASSWORD = '0703';
+<script>
+function nowDateStr() {
+  let n = new Date();
+  return n.toLocaleDateString('hi-IN');
+}
+function nowDayStr() {
+  let n = new Date();
+  return n.toLocaleDateString('hi-IN', {weekday:'long'});
+}
+function nowTimeStr() {
+  let n = new Date();
+  return n.toLocaleTimeString('hi-IN');
+}
+function updateDateDay() {
+  let now = new Date();
+  let day = nowDayStr();
+  let date = nowDateStr();
+  document.getElementById("dateDay").innerText = "दिन: "+day+" | दिनांक: "+date;
+}
+updateDateDay();
 
-    let currentOTPDiv = null;
-    function otpRequestFlow() {
-      currentOTPDiv =
-        document.getElementById('attendanceForm').style.display == 'none'
-          ? document.getElementById('otpDisplay')
-          : document.getElementById('formOTPDisplay');
-      document.getElementById('modalError').textContent = '';
-      document.getElementById('modalBG').classList.remove('hide');
-      document.getElementById('modalPass').value = '';
-      setTimeout(() => document.getElementById('modalPass').focus(), 100);
-    }
-    function modalSubmit() {
-      let pass = document.getElementById('modalPass').value.trim();
-      if (pass === PASSWORD) {
-        document.getElementById('modalBG').classList.add('hide');
-        showOTPdiv();
-      } else {
-        document.getElementById('modalError').textContent = '❌ गलत पासवर्ड!';
+// OTP logic (auto, daily)
+function makeOTP() {
+  let n = new Date();
+  let dd = n.getDate();
+  let mm = n.getMonth()+1;
+  let yyyy = n.getFullYear();
+  let otp = (dd * mm + yyyy) % 100000 + 21;
+  return String(otp).padStart(6,'0');
+}
+const todaysOTP = makeOTP();
+const PASSWORD = "0703";
+
+let currentOTPDiv = null;
+function otpRequestFlow() {
+  currentOTPDiv = (document.getElementById('attendanceForm').style.display=="none") 
+    ? document.getElementById("otpDisplay") : document.getElementById("formOTPDisplay");
+  document.getElementById("modalError").textContent = "";
+  document.getElementById("modalBG").classList.remove("hide");
+  document.getElementById("modalPass").value = "";
+  setTimeout(() => document.getElementById("modalPass").focus(),100);
+}
+function modalSubmit() {
+  let pass = document.getElementById("modalPass").value.trim();
+  if(pass === PASSWORD) {
+    document.getElementById("modalBG").classList.add("hide");
+    showOTPdiv();
+  } else {
+    document.getElementById("modalError").textContent = "❌ गलत पासवर्ड!";
+  }
+}
+document.getElementById("modalPass").addEventListener("keydown",function(e){
+  if(e.key==="Enter")modalSubmit();
+});
+// OTP show for 60s
+function showOTPdiv() {
+  if(!currentOTPDiv) return;
+  currentOTPDiv.textContent = "OTP: " + todaysOTP;
+  currentOTPDiv.classList.remove("hide");
+  setTimeout(function(){
+    currentOTPDiv.classList.add("hide");
+  }, 60000); // 60 sec
+  currentOTPDiv = null;
+}
+
+// Employee list (edit as needed)
+let employees = [
+  "Prem","Dev","Banti","Sorabh","Ankit","Bilal Khan","Arbaz Khan","Sahil","love","Raju"
+];
+const DATA_KEY = "wgAtt_" + nowDateStr();
+let attRows = JSON.parse(localStorage.getItem(DATA_KEY) || '[]');
+
+function renderEmpList() {
+  let html = '';
+  employees.forEach((name,i)=>{
+    let done = attRows.find(r=>r.नाम===name);
+    html += `<div class="emp-row" id="row${i}">
+      <div class="emp-name">${name}</div>
+      <button class="emp-btn" onclick="markAttendance('${name}',${i})" id="btn${i}"${done?' disabled':''}>
+      ${done?'✓ Marked':'Attendance'}
+      </button>
+    </div>`;
+  });
+  document.getElementById("empList").innerHTML = html;
+  showAttLog();
+}
+function showAttLog() {
+  let logDiv = document.getElementById('attendanceLog');
+  let logTable = document.getElementById('logTable').getElementsByTagName('tbody')[0];
+  logTable.innerHTML = "";
+  attRows.forEach(row => {
+    logTable.innerHTML += `<tr>
+      <td>${row.नाम}</td>
+      <td>${row.टाइम}</td>
+      <td>${row.तारीख}</td>
+      <td>${row.दिन}</td>
+    </tr>`;
+  });
+  logDiv.style.display = attRows.length ? "block" : "none";
+}
+
+// OTP Verify (attendance खोलना)
+function checkOTP() {
+  let inp = document.getElementById('otpInput').value.trim();
+  let err = document.getElementById('otpError');
+  if(inp === todaysOTP) {
+    document.getElementById('otpBlock').style.display = "none";
+    document.getElementById('attendanceForm').style.display = "";
+    err.textContent = "";
+    renderEmpList();
+  } else {
+    err.textContent = "गलत OTP! कृपया सही OTP डालें।";
+  }
+}
+
+// WhatsApp share
+document.getElementById('whatsappShare').onclick = function() {
+  let text = `🙏 Waheguru Attendance\nदिन: ${nowDayStr()} | दिनांक: ${nowDateStr()}\n`;
+  attRows.forEach((row,i)=>{
+    text += `${i+1}) ${row.नाम} - ${row.टाइम}\n`;
+  });
+  window.open(`https://wa.me/?text=` + encodeURIComponent(text), "_blank");
+};
+// Excel Download
+document.getElementById('downloadExcel').onclick = function() {
+  let csv = "नाम,समय,दिनांक,दिन\n";
+  attRows.forEach(row=>{
+    csv += `"${row.नाम}","${row.टाइम}","${row.तारीख}","${row.दिन}"\n`;
+  });
+  let blob = new Blob([csv], {type:'text/csv'});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "Attendance-"+nowDateStr()+".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+};
+// Today clear data
+document.getElementById('clearDayData').onclick = function() {
+  if(confirm("आज की attendance data साफ़ करें? (Undo possible नहीं)")) {
+    attRows=[]; localStorage.removeItem(DATA_KEY);
+    renderEmpList(); showAttLog();
+    document.getElementById('whatsappShare').style.display='none';
+    document.getElementById('downloadExcel').style.display='none';
+    document.getElementById('clearDayData').style.display='none';
+  }
+};
+
+// Google Sheets में attendance भेजना (API लिंक बाद में डालें)
+async function sendAttendanceToSheet(name, time, date, day) {
+  try {
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbzn7se7VJDZuDkQx7VQkM8DrrLhzg8y-DJ20P7YCAAUKOkN1F4zppw3Dm5dh4KbjFM/exec', // यहाँ अपना Google Apps Script Web App लिंक डालें
+      {
+        method: "POST",
+        body: JSON.stringify({ name, time, date, day }),
+        headers: {"Content-Type": "application/json", "Accept": "text/plain"}
       }
-    }
-    document.getElementById('modalPass').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') modalSubmit();
-    });
-    function showOTPdiv() {
-      if (!currentOTPDiv) return;
-      currentOTPDiv.textContent = 'OTP: ' + todaysOTP;
-      currentOTPDiv.classList.remove('hide');
-      setTimeout(function () {
-        currentOTPDiv.classList.add('hide');
-      }, 60000);
-      currentOTPDiv = null;
-    }
+    );
+    const result = await response.text();
+    // Optionally, check result === "OK"
+    console.log('Google Sheet response:', result);
+  } catch (error) {
+    console.error('Error sending attendance to Google Sheet:', error);
+  }
+}
 
-    // Attendance Data
-    let employees = [
-      'Prem',
-      'Dev',
-      'Banti',
-      'Sorabh',
-      'Ankit',
-      'Bilal Khan',
-      'Arbaz Khan',
-      'Sahil',
-      'love',
-      'Raju',
-    ];
-    const DATA_KEY = 'wgAtt_' + nowDateStr();
-    let attRows = JSON.parse(localStorage.getItem(DATA_KEY) || '[]');
+window.markAttendance = function(name, idx) {
+  let btn = document.getElementById('btn' + idx);
+  if (btn.disabled) return;
 
-    function renderEmpList() {
-      let html = '';
-      employees.forEach((name, i) => {
-        let done = attRows.find((r) => r.नाम === name);
-        html += `<div class="emp-row" id="row${i}">
-        <div class="emp-name">${name}</div>
-        <button class="emp-btn" onclick="markAttendance('${name}',${i})" id="btn${i}"${
-          done ? ' disabled' : ''
-        }>${done ? '✓ Marked' : 'Attendance'}</button>
-      </div>`;
-      });
-      document.getElementById('empList').innerHTML = html;
-      showAttLog();
-    }
-    function showAttLog() {
-      let logDiv = document.getElementById('attendanceLog');
-      let logTable = document.getElementById('logTable').getElementsByTagName('tbody')[0];
-      logTable.innerHTML = '';
-      attRows.forEach((row) => {
-        logTable.innerHTML += `<tr>
-        <td>${row.नाम}</td>
-        <td>${row.टाइम}</td>
-        <td>${row.तारीख}</td>
-        <td>${row.दिन}</td>
-      </tr>`;
-      });
-      logDiv.style.display = attRows.length ? 'block' : 'none';
-    }
+  let date = nowDateStr();
+  let day = nowDayStr();
+  let time = nowTimeStr();
 
-    // OTP verify
-    function checkOTP() {
-      let inp = document.getElementById('otpInput').value.trim();
-      let err = document.getElementById('otpError');
-      if (inp === todaysOTP) {
-        document.getElementById('otpBlock').style.display = 'none';
-        document.getElementById('attendanceForm').style.display = '';
-        err.textContent = '';
-        renderEmpList();
-      } else {
-        err.textContent = 'गलत OTP! कृपया सही OTP डालें।';
-      }
-    }
+  attRows.push({ नाम: name, टाइम: time, तारीख: date, दिन: day });
+  localStorage.setItem(DATA_KEY, JSON.stringify(attRows));
 
-    // WhatsApp Share
-    document.getElementById('whatsappShare').onclick = function () {
-      let text = `🙏 Waheguru Attendance\nदिन: ${nowDayStr()} | दिनांक: ${nowDateStr()}\n`;
-      attRows.forEach((row, i) => {
-        text += `${i + 1}) ${row.नाम} - ${row.टाइम}\n`;
-      });
-      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-    };
-    // Excel Download
-    document.getElementById('downloadExcel').onclick = function () {
-      let csv = 'नाम,समय,दिनांक,दिन\n';
-      attRows.forEach((row) => {
-        csv += `"${row.नाम}","${row.टाइम}","${row.तारीख}","${row.दिन}"\n`;
-      });
-      let blob = new Blob([csv], { type: 'text/csv' });
-      let a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'Attendance-' + nowDateStr() + '.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    };
-    // Clear Today Data
-    document.getElementById('clearDayData').onclick = function () {
-      if (confirm('आज की attendance data साफ़ करें? (Undo possible नहीं)')) {
-        attRows = [];
-        localStorage.removeItem(DATA_KEY);
-        renderEmpList();
-        showAttLog();
-        document.getElementById('whatsappShare').style.display = 'none';
-        document.getElementById('downloadExcel').style.display = 'none';
-        document.getElementById('clearDayData').style.display = 'none';
-      }
-    };
+  btn.textContent = "✓ Marked";
+  btn.disabled = true;
+  btn.style.background = "#b0b0b0";
+  showAttLog();
 
-    // Google Sheets attendance भेजना
-    async function sendAttendanceToSheet(name, time, date, day) {
-      try {
-        const response = await fetch(
-          "https://docs.google.com/spreadsheets/d/18xwADh-iCSYsOVFV3n2hgNpWWUxdqT1iujzWO4HIh40/edit?gid=0#gid=0",
-          {
-            method: 'POST',
-            body: JSON.stringify({ name, time, date, day }),
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'text/plain',
-            },
-          }
-        );
-        const result = await response.text();
-        console.log('Google Sheet response:', result);
-        if (result.trim() !== 'OK') {
-          console.warn('Unexpected response from server:', result);
-        }
-      } catch (error) {
-        console.error('Error sending attendance to Google Sheet:', error);
-      }
-    }
+  document.getElementById('whatsappShare').style.display = 'inline-block';
+  document.getElementById('downloadExcel').style.display = 'inline-block';
+  document.getElementById('clearDayData').style.display = 'inline-block';
 
-    window.markAttendance = function (name, idx) {
-      let btn = document.getElementById('btn' + idx);
-      if (btn.disabled) return;
-
-      let date = nowDateStr();
-      let day = nowDayStr();
-      let time = nowTimeStr();
-
-      attRows.push({ नाम: name, टाइम: time, तारीख: date, दिन: day });
-      localStorage.setItem(DATA_KEY, JSON.stringify(attRows));
-
-      btn.textContent = '✓ Marked';
-      btn.disabled = true;
-      btn.style.background = '#b0b0b0';
-      showAttLog();
-
-      document.getElementById('whatsappShare').style.display = 'inline-block';
-      document.getElementById('downloadExcel').style.display = 'inline-block';
-      document.getElementById('clearDayData').style.display = 'inline-block';
-
-      // Google Sheet पे भेजें
-      sendAttendanceToSheet(name, time, date, day);
-    };
-  </script>
+  // Google Sheet में भेजे (API लिंक बाद में)
+  sendAttendanceToSheet(name, time, date, day);
+};
+</script>
 </body>
-
 </html>
-
