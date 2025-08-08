@@ -242,7 +242,7 @@ document.getElementById('clearDayData').onclick = function() {
 async function sendAttendanceToSheet(name, time, date, day) {
   try {
     const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbzn7se7VJDZuDkQx7VQkM8DrrLhzg8y-DJ20P7YCAAUKOkN1F4zppw3Dm5dh4KbjFM/exec', // यहाँ अपना Google Apps Script Web App लिंक डालें
+      'https://script.google.com/macros/s/AKfycbzYUjOdUCyrd_REGqOfyxINUyNb5uPz7FHtc7YGTDz0Uzrlf0TceVSezptUIcndenXB0Q/exec', // यहाँ अपना Google Apps Script Web App लिंक डालें
       {
         method: "POST",
         body: JSON.stringify({ name, time, date, day }),
@@ -283,3 +283,4 @@ window.markAttendance = function(name, idx) {
 </script>
 </body>
 </html>
+
