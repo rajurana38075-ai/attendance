@@ -485,7 +485,7 @@
     async function sendAttendanceToSheet(name, time, date, day) {
       try {
         const response = await fetch(
-          "https://script.google.com/macros/s/AKfycbzcuL4WBa6m1hgLovq4VGZr-lokTlQAH1KVcKkjWUNrSm2DD5ZgYJOlLnBg69K1KZAm2g/exec",
+          "https://docs.google.com/spreadsheets/d/18xwADh-iCSYsOVFV3n2hgNpWWUxdqT1iujzWO4HIh40/edit?gid=0#gid=0",
           {
             method: 'POST',
             body: JSON.stringify({ name, time, date, day }),
@@ -532,3 +532,4 @@
 </body>
 
 </html>
+
